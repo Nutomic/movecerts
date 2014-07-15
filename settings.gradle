@@ -1,1 +1,2 @@
-include ':app', ':libraries:RootCommands'
+include ':app', ':libsuperuser'
+project(':libsuperuser').projectDir = new File('libraries/libsuperuser/libsuperuser')
