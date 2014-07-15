@@ -33,5 +33,8 @@ public class Certificate {
 				? new File(CertificateManager.SYSTEM_CERTIFICATES_DIR, mFilename)
 				: new File(CertificateManager.USER_CERTIFICATES_DIR, mFilename);
 	}
+	public boolean isSystemCertificate() {
+		return mIsSystemCertificate;
+	}
 
 }

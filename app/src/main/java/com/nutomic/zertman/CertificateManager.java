@@ -8,6 +8,9 @@ import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
 
+/**
+ * Provides functions to handle system and user certificates using root.
+ */
 public class CertificateManager {
 
 	private static final String TAG = "CertificateManager";
