@@ -13,6 +13,8 @@ public class MainActivity extends ListActivity {
 
 	private CertificateManager mCertificateManager;
 
+	private MovedCertificatesStorage mMovedCertificatesStorage;
+
 	/**
 	 * Sets up ListView showing all certificates.
 	 */
@@ -23,8 +25,10 @@ public class MainActivity extends ListActivity {
 	    mListView = getListView();
 	    mCertificateAdapter = new CertificateAdapter(this);
 	    mCertificateManager = new CertificateManager();
+	    mMovedCertificatesStorage = new MovedCertificatesStorage(this);
+
 	    mCertificateAdapter.addAll(mCertificateManager.getCertificates(false));
-	    mCertificateAdapter.addAll(mCertificateManager.getCertificates(true));
+	    mCertificateAdapter.addAll(mMovedCertificatesStorage.list());
 	    mListView.setAdapter(mCertificateAdapter);
     }
 
