@@ -30,17 +30,12 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
 	@SmallTest
 	public void testOrientation() {
-		try {
-			mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-			Thread.sleep(50);
-			assertTrue(true);
-			mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-			Thread.sleep(50);
-			assertTrue(true);
-		}
-		catch (InterruptedException e) {
-			Log.w(TAG, "Sleep failed", e);
-		}
+		mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		getInstrumentation().waitForIdleSync();
+		assertTrue(true);
+		mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		getInstrumentation().waitForIdleSync();
+		assertTrue(true);
 	}
 
 }

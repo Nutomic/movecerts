@@ -3,4 +3,8 @@
 
     <string name="app_name">Zert Man</string>
 
+	<string name="dialog_move_certs_title">User Certificates Found</string>
+
+	<string name="dialog_move_certs_message">Should they be moved to system storage?</string>
+
 </resources>
