@@ -9,6 +9,7 @@ import android.provider.BaseColumns;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +33,7 @@ public class MovedCertificatesStorage implements Closeable {
 	}
 
 	public boolean insert(Certificate cert) {
-		if (!cert.isSystemCertificate())
-			return false;
+		assert(cert.isSystemCertificate());
 
 		ContentValues cv = new ContentValues();
 		cv.put(Table.COLUMN_NAME_FILE_NAME, cert.getFile().getName());

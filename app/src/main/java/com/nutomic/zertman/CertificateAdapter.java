@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -12,8 +13,15 @@ import android.widget.TextView;
  */
 public class CertificateAdapter extends ArrayAdapter<Certificate> {
 
-	public CertificateAdapter(Context context) {
-		super(context, android.R.layout.simple_list_item_1);
+	private CertificateManager mCertificateManager;
+
+	private MovedCertificatesStorage mMovedCertificatesStorage;
+
+	public CertificateAdapter(Context context, CertificateManager certificateManager,
+	                          MovedCertificatesStorage movedCertificatesStorage) {
+		super(context, 0);
+		mCertificateManager = certificateManager;
+		mMovedCertificatesStorage = movedCertificatesStorage;
 	}
 
 	@Override
@@ -21,15 +29,37 @@ public class CertificateAdapter extends ArrayAdapter<Certificate> {
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) getContext()
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+			convertView = inflater.inflate(R.layout.certificate_list_item, parent, false);
 		}
 
-		TextView title = (TextView) convertView.findViewById(android.R.id.text1);
-		title.setText(getItem(position).getFile().getName());
-		convertView.setBackgroundColor(getContext().getResources().getColor(
-				(getItem(position).isSystemCertificate())
-						? R.color.background_system_certificate
-						: R.color.background_user_certificate));
+		final Certificate cert = getItem(position);
+		TextView title = (TextView) convertView.findViewById(R.id.title);
+		title.setText(cert.getFile().getName());
+		Button button = (Button) convertView.findViewById(R.id.button);
+		int colorRes;
+		if (cert.isSystemCertificate()) {
+			button.setText(R.string.delete);
+			button.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mCertificateManager.deleteCertificate(cert);
+					mMovedCertificatesStorage.delete(cert);
+				}
+			});
+			colorRes = R.color.background_system_certificate;
+		}
+		else {
+			button.setText(R.string.move_to_system);
+			button.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mCertificateManager.moveCertificateToSystem(cert);
+					mMovedCertificatesStorage.insert(cert);
+				}
+			});
+			colorRes = R.color.background_user_certificate;
+		}
+		convertView.setBackgroundColor(getContext().getResources().getColor(colorRes));
 		return convertView;
 	}
 

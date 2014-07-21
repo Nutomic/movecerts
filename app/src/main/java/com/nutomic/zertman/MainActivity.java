@@ -8,7 +8,6 @@ import android.widget.ListView;
 
 import java.util.List;
 
-
 public class MainActivity extends ListActivity {
 
 	private ListView mListView;
@@ -27,15 +26,21 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
 	    mListView = getListView();
-	    mCertificateAdapter = new CertificateAdapter(this);
 	    mCertificateManager = new CertificateManager();
 	    mMovedCertificatesStorage = new MovedCertificatesStorage(this);
+	    mCertificateAdapter =
+			    new CertificateAdapter(this, mCertificateManager, mMovedCertificatesStorage);
 
 	    mCertificateAdapter.addAll(mCertificateManager.getCertificates(false));
+	    // FIXME: nothing listed
+	    // -> db table is empty
 	    mCertificateAdapter.addAll(mMovedCertificatesStorage.list());
 	    mListView.setAdapter(mCertificateAdapter);
     }
 
+	/**
+	 * Shows a dialog to move all user certificates to system storage.
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -48,7 +53,7 @@ public class MainActivity extends ListActivity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							for (Certificate c : list) {
-								mCertificateManager.moveCertificateToSystem(c);
+								c = mCertificateManager.moveCertificateToSystem(c);
 								mMovedCertificatesStorage.insert(c);
 							}
 						}

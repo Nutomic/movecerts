@@ -13,6 +13,13 @@ android {
 		testHandleProfiling true
 		testFunctionalTest true
 	}
+
+	buildTypes {
+		debug {
+			applicationIdSuffix ".debug"
+			debuggable true
+		}
+	}
 }
 
 dependencies {
