@@ -42,8 +42,13 @@ public class CertificateAdapter extends ArrayAdapter<Certificate> {
 			button.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					mCertificateManager.deleteCertificate(cert);
-					mMovedCertificatesStorage.delete(cert);
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							mCertificateManager.deleteCertificate(cert);
+							mMovedCertificatesStorage.delete(cert);
+						}
+					}).start();
 				}
 			});
 			colorRes = R.color.background_system_certificate;
@@ -53,8 +58,13 @@ public class CertificateAdapter extends ArrayAdapter<Certificate> {
 			button.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					mCertificateManager.moveCertificateToSystem(cert);
-					mMovedCertificatesStorage.insert(cert);
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							mCertificateManager.moveCertificateToSystem(cert);
+							mMovedCertificatesStorage.insert(cert);
+						}
+					}).start();
 				}
 			});
 			colorRes = R.color.background_user_certificate;

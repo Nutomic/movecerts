@@ -31,8 +31,13 @@ public class MainActivity extends ListActivity {
 	    mCertificateAdapter =
 			    new CertificateAdapter(this, mCertificateManager, mMovedCertificatesStorage);
 
-	    mCertificateAdapter.addAll(mCertificateManager.getCertificates(false));
-	    mCertificateAdapter.addAll(mMovedCertificatesStorage.list());
+	    new Thread(new Runnable() {
+		    @Override
+		    public void run() {
+			    mCertificateAdapter.addAll(mCertificateManager.getCertificates(false));
+			    mCertificateAdapter.addAll(mMovedCertificatesStorage.list());
+		    }
+	    }).start();
 	    mListView.setAdapter(mCertificateAdapter);
     }
 
@@ -50,10 +55,15 @@ public class MainActivity extends ListActivity {
 					.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							for (Certificate c : list) {
-								c = mCertificateManager.moveCertificateToSystem(c);
-								mMovedCertificatesStorage.insert(c);
-							}
+							new Thread(new Runnable() {
+								@Override
+								public void run() {
+									for (Certificate c : list) {
+										c = mCertificateManager.moveCertificateToSystem(c);
+										mMovedCertificatesStorage.insert(c);
+									}
+								}
+							}).start();
 						}
 					})
 					.setNegativeButton(android.R.string.no, null)
