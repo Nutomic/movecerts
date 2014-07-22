@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import eu.chainfire.libsuperuser.Shell;
 
@@ -31,11 +32,23 @@ public class CertificateManagerTest extends AndroidTestCase {
 
 	private CertificateManager mCertificateManager;
 
+	private CountDownLatch mLatch;
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
 		mCertificateManager = new CertificateManager();
+		mCertificateManager.setOnCertificateChangedListener(
+				new CertificateManager.OnCertificateChangedListener() {
+			@Override
+			public void onCertificateChanged() {
+				if (mLatch == null)
+					return;
+
+				mLatch.countDown();
+			}
+		});
 
 		assertTrue(Shell.SU.available());
 	}
@@ -44,13 +57,25 @@ public class CertificateManagerTest extends AndroidTestCase {
 	public void testUserCertificates() {
 		Certificate cert = copyCertificate(false);
 		assertTrue(mCertificateManager.getCertificates(false).contains(cert));
+		mLatch = new CountDownLatch(1);
 		assertTrue(mCertificateManager.deleteCertificate(cert));
 		assertReadOnly();
+		waitForCallback();
+	}
+
+	private void waitForCallback() {
+		try {
+			mLatch.await();
+		}
+		catch (InterruptedException e) {
+			fail();
+		}
 	}
 
 	@MediumTest
 	public void testMoveCertificate() {
 		Certificate cert = copyCertificate(false);
+		mLatch = new CountDownLatch(2);
 		Certificate newCertificate = mCertificateManager.moveCertificateToSystem(cert);
 		assertReadOnly();
 		assertNotNull(newCertificate);
@@ -61,6 +86,7 @@ public class CertificateManagerTest extends AndroidTestCase {
 		assertTrue(mCertificateManager.getCertificates(true).contains(newCertificate));
 		assertTrue(mCertificateManager.deleteCertificate(newCertificate));
 		assertReadOnly();
+		waitForCallback();
 	}
 
 	/**
@@ -100,7 +126,9 @@ public class CertificateManagerTest extends AndroidTestCase {
 	public void testSystemCertificates() {
 		Certificate cert = copyCertificate(true);
 		assertTrue(mCertificateManager.getCertificates(true).contains(cert));
+		mLatch = new CountDownLatch(1);
 		assertTrue(mCertificateManager.deleteCertificate(cert));
+		waitForCallback();
 		assertReadOnly();
 	}
 

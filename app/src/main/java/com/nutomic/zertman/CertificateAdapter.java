@@ -1,6 +1,7 @@
 package com.nutomic.zertman;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +9,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.List;
+
 /**
  * List Adapter for {@link Certificate}.
  */
-public class CertificateAdapter extends ArrayAdapter<Certificate> {
+public class CertificateAdapter extends ArrayAdapter<Certificate> implements
+		CertificateManager.OnCertificateChangedListener{
 
 	private CertificateManager mCertificateManager;
 
@@ -73,4 +77,23 @@ public class CertificateAdapter extends ArrayAdapter<Certificate> {
 		return convertView;
 	}
 
+	@Override
+	public void onCertificateChanged() {
+		new UpdateListTask().execute();
+	}
+
+	private class UpdateListTask extends AsyncTask<Void, Void, List<Certificate>> {
+		@Override
+		protected List<Certificate> doInBackground(Void... params) {
+			List<Certificate> ret = mCertificateManager.getCertificates(false);
+			ret.addAll(mMovedCertificatesStorage.list());
+			return ret;
+		}
+
+		@Override
+		protected void onPostExecute(List<Certificate> certificate) {
+			clear();
+			addAll(certificate);
+		}
+	}
 }

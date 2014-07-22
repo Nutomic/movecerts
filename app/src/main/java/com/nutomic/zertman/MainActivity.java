@@ -30,14 +30,8 @@ public class MainActivity extends ListActivity {
 	    mMovedCertificatesStorage = new MovedCertificatesStorage(this);
 	    mCertificateAdapter =
 			    new CertificateAdapter(this, mCertificateManager, mMovedCertificatesStorage);
-
-	    new Thread(new Runnable() {
-		    @Override
-		    public void run() {
-			    mCertificateAdapter.addAll(mCertificateManager.getCertificates(false));
-			    mCertificateAdapter.addAll(mMovedCertificatesStorage.list());
-		    }
-	    }).start();
+		mCertificateAdapter.onCertificateChanged();
+	    mCertificateManager.setOnCertificateChangedListener(mCertificateAdapter);
 	    mListView.setAdapter(mCertificateAdapter);
     }
 
@@ -47,6 +41,8 @@ public class MainActivity extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+
+		mCertificateAdapter.onCertificateChanged();
 		final List<Certificate> list = mCertificateManager.getCertificates(false);
 		if (!list.isEmpty()) {
 			new AlertDialog.Builder(this)

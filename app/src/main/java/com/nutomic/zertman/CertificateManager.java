@@ -19,12 +19,22 @@ public class CertificateManager {
 
 	public static final File SYSTEM_CERTIFICATES_DIR = new File("/system/etc/security/cacerts");
 
+	public interface OnCertificateChangedListener {
+		public void onCertificateChanged();
+	}
+
 	/**
 	 * Possible options for partition mounting (used for #remountSystem()).
 	 */
 	private enum Mode {
 		ReadOnly,
 		ReadWrite
+	}
+
+	private OnCertificateChangedListener mOnCertificateChangedListener;
+
+	public void setOnCertificateChangedListener(OnCertificateChangedListener listener) {
+		mOnCertificateChangedListener = listener;
 	}
 
 	/**
@@ -56,7 +66,11 @@ public class CertificateManager {
 		run("chmod 644 " + SYSTEM_CERTIFICATES_DIR + "/" + certificate.getFile().getName());
 		remountSystem(Mode.ReadOnly);
 		deleteCertificate(certificate);
-		return new Certificate(certificate.getFile().getName(), true);
+		Certificate newCert = new Certificate(certificate.getFile().getName(), true);
+		if (mOnCertificateChangedListener != null) {
+			mOnCertificateChangedListener.onCertificateChanged();
+		}
+		return newCert;
 	}
 
 	/**
@@ -68,6 +82,9 @@ public class CertificateManager {
 		remountSystem(Mode.ReadWrite);
 		boolean success = run("rm " + certificate.getFile().getAbsolutePath());
 		remountSystem(Mode.ReadOnly);
+		if (mOnCertificateChangedListener != null) {
+			mOnCertificateChangedListener.onCertificateChanged();
+		}
 		return success;
 	}
 
