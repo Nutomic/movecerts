@@ -32,11 +32,6 @@ public class MovedCertificatesStorageTest extends AndroidTestCase {
 	}
 
 	@SmallTest
-	public void testInvalidInsert() {
-		assertFalse(mMovedCertificatesStorage.insert(new Certificate("user", false)));
-	}
-
-	@SmallTest
 	public void testInvalidDelete() {
 		assertFalse(mMovedCertificatesStorage.delete(new Certificate("cert", true)));
 	}

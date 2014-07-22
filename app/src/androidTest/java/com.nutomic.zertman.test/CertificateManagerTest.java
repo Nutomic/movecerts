@@ -3,15 +3,20 @@ package com.nutomic.zertman.test;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
+import android.util.Log;
 
 import com.nutomic.zertman.Certificate;
 import com.nutomic.zertman.CertificateManager;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -51,10 +56,44 @@ public class CertificateManagerTest extends AndroidTestCase {
 		assertNotNull(newCertificate);
 		assertEquals(newCertificate.getFile().getName(), cert.getFile().getName());
 		assertNotSame(newCertificate.getFile(), cert.getFile());
+		assertPermissions(newCertificate.getFile(), "-rw-r--r--");
 		assertFalse(mCertificateManager.getCertificates(false).contains(cert));
 		assertTrue(mCertificateManager.getCertificates(true).contains(newCertificate));
 		assertTrue(mCertificateManager.deleteCertificate(newCertificate));
 		assertReadOnly();
+	}
+
+	/**
+	 * Asserts that file has the given permissions.
+	 */
+	private void assertPermissions(File file, String expectedPermissions) {
+		Process process;
+		DataOutputStream dos = null;
+		InputStreamReader isr = null;
+		BufferedReader br = null;
+		try {
+			process = Runtime.getRuntime().exec("sh");
+			dos = new DataOutputStream(process.getOutputStream());
+			isr = new InputStreamReader(process.getInputStream());
+			dos.writeBytes("ls -l " + file.getAbsolutePath() + "\n");
+			dos.writeBytes("exit\n");
+			br = new BufferedReader(isr);
+			assertTrue(br.readLine().startsWith(expectedPermissions));
+			dos.flush();
+		}
+		catch (IOException e) {
+			fail();
+		}
+		finally {
+			try {
+				dos.close();
+				br.close();
+				isr.close();
+			}
+			catch (IOException e) {
+				fail();
+			}
+		}
 	}
 
 	@SmallTest

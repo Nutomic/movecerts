@@ -32,8 +32,6 @@ public class MainActivity extends ListActivity {
 			    new CertificateAdapter(this, mCertificateManager, mMovedCertificatesStorage);
 
 	    mCertificateAdapter.addAll(mCertificateManager.getCertificates(false));
-	    // FIXME: nothing listed
-	    // -> db table is empty
 	    mCertificateAdapter.addAll(mMovedCertificatesStorage.list());
 	    mListView.setAdapter(mCertificateAdapter);
     }

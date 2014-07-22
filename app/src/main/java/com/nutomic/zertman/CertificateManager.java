@@ -53,6 +53,7 @@ public class CertificateManager {
 		// NOTE: Using mv gives error: "failed on *file* - Cross-device link".
 		run("cp " + USER_CERTIFICATES_DIR + "/" + certificate.getFile().getName() +
 				" " + SYSTEM_CERTIFICATES_DIR + "/" + certificate.getFile().getName());
+		run("chmod 644 " + SYSTEM_CERTIFICATES_DIR + "/" + certificate.getFile().getName());
 		remountSystem(Mode.ReadOnly);
 		deleteCertificate(certificate);
 		return new Certificate(certificate.getFile().getName(), true);
