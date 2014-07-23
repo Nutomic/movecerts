@@ -60,7 +60,7 @@ public class CertificateAdapter extends ArrayAdapter<Certificate> implements
 					}).start();
 				}
 			});
-			colorRes = R.color.background_system_certificate;
+			colorRes = R.color.title_system_certificate;
 		}
 		else {
 			button.setText(R.string.move_to_system);
@@ -76,9 +76,9 @@ public class CertificateAdapter extends ArrayAdapter<Certificate> implements
 					}).start();
 				}
 			});
-			colorRes = R.color.background_user_certificate;
+			colorRes = R.color.title_user_certificate;
 		}
-		convertView.setBackgroundColor(getContext().getResources().getColor(colorRes));
+		title.setTextColor(getContext().getResources().getColor(colorRes));
 		return convertView;
 	}
 

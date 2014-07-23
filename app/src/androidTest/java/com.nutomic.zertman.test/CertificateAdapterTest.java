@@ -36,10 +36,4 @@ public class CertificateAdapterTest extends AndroidTestCase {
 		}
 	}
 
-	@SmallTest
-	public void testColors() {
-		assertNotSame(mCertificateAdapter.getView(0, null, null).getBackground(),
-				mCertificateAdapter.getView(1, null, null).getBackground());
-	}
-
 }
