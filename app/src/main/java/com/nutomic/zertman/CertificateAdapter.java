@@ -2,6 +2,7 @@ package com.nutomic.zertman;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +38,12 @@ public class CertificateAdapter extends ArrayAdapter<Certificate> implements
 		}
 
 		final Certificate cert = getItem(position);
+		// NOTE: This should be called asynchronously.
+		Pair<String, String> desc = CertificateManager.getDescription(cert);
 		TextView title = (TextView) convertView.findViewById(R.id.title);
-		title.setText(cert.getFile().getName());
+		title.setText(desc.first);
+		TextView summary = (TextView) convertView.findViewById(R.id.summary);
+		summary.setText(desc.second);
 		Button button = (Button) convertView.findViewById(R.id.button);
 		int colorRes;
 		if (cert.isSystemCertificate()) {

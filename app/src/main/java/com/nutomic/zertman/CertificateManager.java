@@ -1,8 +1,17 @@
 package com.nutomic.zertman;
 
+import android.net.http.SslCertificate;
 import android.util.Log;
+import android.util.Pair;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,6 +118,57 @@ public class CertificateManager {
 			Log.w(TAG, "Failed to execute root command: " + command);
 		}
 		return result != null;
+	}
+
+	/**
+	 * Returns strings for certificate naming, copied from AOSP 4.4.4,
+	 * packages/apps/Settings/src/com/android/settings/TrustedCredentialsSettings.java:310.
+	 */
+	public static Pair<String, String> getDescription(Certificate cert) {
+		InputStream is = null;
+		X509Certificate cert2;
+		try {
+			CertificateFactory factory = CertificateFactory.getInstance("X509");
+			is = new BufferedInputStream(new FileInputStream(cert.getFile()));
+			cert2 = (X509Certificate) factory.generateCertificate(is);
+		} catch (IOException e) {
+			return null;
+		} catch (CertificateException e) {
+			return null;
+		} finally {
+			try {
+				is.close();
+			}
+			catch (IOException e) {
+				Log.w(TAG, "Failed to close stream", e);
+			}
+		}
+
+		String primary;
+		String secondary;
+
+		SslCertificate c2 = new SslCertificate(cert2);
+		String cn = c2.getIssuedTo().getCName();
+		String o = c2.getIssuedTo().getOName();
+		String ou = c2.getIssuedTo().getUName();
+		if (!o.isEmpty()) {
+			if (!cn.isEmpty()) {
+				primary = o;
+				secondary = cn;
+			} else {
+				primary = o;
+				secondary = ou;
+			}
+		} else {
+			if (!cn.isEmpty()) {
+				primary = cn;
+				secondary = "";
+			} else {
+				primary = c2.getIssuedTo().getDName();
+				secondary = "";
+			}
+		}
+		return new Pair<String, String>(primary, secondary);
 	}
 
 }
