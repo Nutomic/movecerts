@@ -80,8 +80,8 @@ public class CertificateAdapter extends ArrayAdapter<Certificate> implements
 					new Thread(new Runnable() {
 						@Override
 						public void run() {
-							mCertificateManager.moveCertificateToSystem(cert);
-							mMovedCertificatesStorage.insert(cert);
+							Certificate moved = mCertificateManager.moveCertificateToSystem(cert);
+							mMovedCertificatesStorage.insert(moved);
 						}
 					}).start();
 				}
