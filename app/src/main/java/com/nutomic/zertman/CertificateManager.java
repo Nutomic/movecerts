@@ -13,6 +13,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -39,6 +40,11 @@ public class CertificateManager {
 		ReadOnly,
 		ReadWrite
 	}
+
+	/**
+	 * Contains all certificates that are currently being moved from user to system storage.
+	 */
+	private LinkedList<Certificate> mCurrentlyMoving = new LinkedList<Certificate>();
 
 	private OnCertificateChangedListener mOnCertificateChangedListener;
 
@@ -68,6 +74,10 @@ public class CertificateManager {
 	 * @return The updated certificate (located in system storage).
 	 */
 	public Certificate moveCertificateToSystem(Certificate certificate) {
+		mCurrentlyMoving.add(certificate);
+		if (mOnCertificateChangedListener != null) {
+			mOnCertificateChangedListener.onCertificateChanged();
+		}
 		remountSystem(Mode.ReadWrite);
 		// NOTE: Using mv gives error: "failed on *file* - Cross-device link".
 		run("cp " + USER_CERTIFICATES_DIR + "/" + certificate.getFile().getName() +
@@ -75,6 +85,7 @@ public class CertificateManager {
 		run("chmod 644 " + SYSTEM_CERTIFICATES_DIR + "/" + certificate.getFile().getName());
 		remountSystem(Mode.ReadOnly);
 		deleteCertificate(certificate);
+		mCurrentlyMoving.remove(certificate);
 		Certificate newCert = new Certificate(certificate.getFile().getName(), true);
 		if (mOnCertificateChangedListener != null) {
 			mOnCertificateChangedListener.onCertificateChanged();
@@ -169,6 +180,10 @@ public class CertificateManager {
 			}
 		}
 		return new Pair<String, String>(primary, secondary);
+	}
+
+	public boolean isMovingCertificate(Certificate cert) {
+		return mCurrentlyMoving.contains(cert);
 	}
 
 }

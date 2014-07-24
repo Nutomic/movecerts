@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -37,16 +38,25 @@ public class CertificateAdapter extends ArrayAdapter<Certificate> implements
 			convertView = inflater.inflate(R.layout.certificate_list_item, parent, false);
 		}
 
+		TextView title = (TextView) convertView.findViewById(R.id.title);
+		Button button = (Button) convertView.findViewById(R.id.button);
+		ProgressBar loading = (ProgressBar) convertView.findViewById(R.id.loading);
+		TextView summary = (TextView) convertView.findViewById(R.id.summary);
+
+		button.setVisibility(View.VISIBLE);
+		loading.setVisibility(View.INVISIBLE);
+
 		final Certificate cert = getItem(position);
 		// NOTE: This should be called asynchronously.
 		Pair<String, String> desc = CertificateManager.getDescription(cert);
-		TextView title = (TextView) convertView.findViewById(R.id.title);
 		title.setText(desc.first);
-		TextView summary = (TextView) convertView.findViewById(R.id.summary);
 		summary.setText(desc.second);
-		Button button = (Button) convertView.findViewById(R.id.button);
-		int colorRes;
-		if (cert.isSystemCertificate()) {
+		int colorRes = android.R.color.primary_text_light;
+		if (mCertificateManager.isMovingCertificate(cert)) {
+			button.setVisibility(View.INVISIBLE);
+			loading.setVisibility(View.VISIBLE);
+		}
+		else if (cert.isSystemCertificate()) {
 			button.setText(R.string.delete);
 			button.setOnClickListener(new View.OnClickListener() {
 				@Override

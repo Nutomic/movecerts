@@ -13,7 +13,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="8dip"
-		android:textAppearance="?android:attr/textAppearanceListItem"/>
+		android:textAppearance="?android:attr/textAppearanceListItem" />
 
 	<Button
 		android:id="@+id/button"
@@ -21,7 +21,14 @@
 		android:layout_height="wrap_content"
 		android:layout_alignTop="@id/title"
 		android:layout_alignParentRight="true"
-		style="?android:attr/buttonStyleSmall"/>
+		style="?android:attr/buttonStyleSmall" />
+
+	<ProgressBar
+		android:id="@+id/loading"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignTop="@id/title"
+		android:layout_alignParentRight="true" />
 
 	<TextView
 		android:id="@+id/summary"
