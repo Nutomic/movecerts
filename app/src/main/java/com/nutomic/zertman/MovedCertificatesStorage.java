@@ -33,7 +33,9 @@ public class MovedCertificatesStorage implements Closeable {
 	}
 
 	public boolean insert(Certificate cert) {
-		assert(cert.isSystemCertificate());
+		if (BuildConfig.DEBUG && !cert.isSystemCertificate()) {
+			throw new InvalidParameterException("Only system certificates can be inserted");
+		}
 
 		ContentValues cv = new ContentValues();
 		cv.put(Table.COLUMN_NAME_FILE_NAME, cert.getFile().getName());
