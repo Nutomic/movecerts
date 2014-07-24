@@ -1,4 +1,26 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		classpath 'com.alexvasilkov:android_sign:0.2+'
+	}
+}
+
+import java.util.regex.Pattern
+
 apply plugin: 'com.android.application'
+apply plugin: 'android_sign'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile 'com.android.support:appcompat-v7:19.1.+'
+}
+
 android {
 	compileSdkVersion 19
 	buildToolsVersion '19.1.0'
@@ -14,10 +36,26 @@ android {
 		testFunctionalTest true
 	}
 
+	signingConfigs {
+		release {
+			// Android Studio does not pass environment variables.
+			// This means you have to use the command line for release builds.
+			def ks = System.getenv("KEYSTORE")
+			def ka = System.getenv("KEY_ALIAS")
+			if (ks != null && ka != null) {
+				storeFile file(ks)
+				keyAlias ka
+			}
+		}
+	}
+
 	buildTypes {
 		debug {
 			applicationIdSuffix ".debug"
 			debuggable true
+		}
+		release {
+			signingConfig signingConfigs.release
 		}
 	}
 }
