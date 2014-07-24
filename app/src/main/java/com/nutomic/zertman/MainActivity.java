@@ -8,6 +8,8 @@ import android.widget.ListView;
 
 import java.util.List;
 
+import eu.chainfire.libsuperuser.Shell;
+
 public class MainActivity extends ListActivity {
 
 	private ListView mListView;
@@ -17,6 +19,10 @@ public class MainActivity extends ListActivity {
 	private CertificateManager mCertificateManager;
 
 	private MovedCertificatesStorage mMovedCertificatesStorage;
+
+	private AlertDialog mNoRootDialog;
+
+	private AlertDialog mMoveCertificatesDialog;
 
 	/**
 	 * Sets up ListView showing all certificates.
@@ -33,6 +39,37 @@ public class MainActivity extends ListActivity {
 		mCertificateAdapter.onCertificateChanged();
 	    mCertificateManager.setOnCertificateChangedListener(mCertificateAdapter);
 	    mListView.setAdapter(mCertificateAdapter);
+
+	    mMoveCertificatesDialog = new AlertDialog.Builder(this)
+			    .setTitle(R.string.dialog_move_certs_title)
+			    .setMessage(R.string.dialog_move_certs_message)
+			    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+					    new Thread(new Runnable() {
+						    @Override
+						    public void run() {
+							    for (Certificate c : mCertificateManager.getCertificates(false)) {
+								    c = mCertificateManager.moveCertificateToSystem(c);
+								    mMovedCertificatesStorage.insert(c);
+							    }
+						    }
+					    }).start();
+				    }
+			    })
+			    .setNegativeButton(android.R.string.no, null)
+			    .create();
+
+	    mNoRootDialog = new AlertDialog.Builder(this)
+			    .setTitle(R.string.dialog_no_root_title)
+			    .setMessage(R.string.dialog_no_root_message)
+			    .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+					    finish();
+				    }
+			    })
+			    .create();
     }
 
 	/**
@@ -42,28 +79,16 @@ public class MainActivity extends ListActivity {
 	protected void onResume() {
 		super.onResume();
 
+		// Make sure the list is updated in case of external changes.
 		mCertificateAdapter.onCertificateChanged();
-		final List<Certificate> list = mCertificateManager.getCertificates(false);
-		if (!list.isEmpty()) {
-			new AlertDialog.Builder(this)
-					.setTitle(R.string.dialog_move_certs_title)
-					.setMessage(R.string.dialog_move_certs_message)
-					.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							new Thread(new Runnable() {
-								@Override
-								public void run() {
-									for (Certificate c : list) {
-										c = mCertificateManager.moveCertificateToSystem(c);
-										mMovedCertificatesStorage.insert(c);
-									}
-								}
-							}).start();
-						}
-					})
-					.setNegativeButton(android.R.string.no, null)
-					.show();
+
+		if (!Shell.SU.available()) {
+			mNoRootDialog.show();
+			return;
+		}
+
+		if (!mCertificateManager.getCertificates(false).isEmpty()) {
+			mMoveCertificatesDialog.show();
 		}
 	}
 }

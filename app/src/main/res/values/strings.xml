@@ -11,4 +11,8 @@
 
 	<string name="delete">Delete</string>
 
+	<string name="dialog_no_root_title">No root permissions</string>
+
+	<string name="dialog_no_root_message">This app requires root access to work. Make sure your device is rooted and try again.</string>
+
 </resources>
