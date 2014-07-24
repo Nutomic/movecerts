@@ -5,14 +5,13 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
 
 public class MainActivity extends ListActivity {
-
-	private ListView mListView;
 
 	private CertificateAdapter mCertificateAdapter;
 
@@ -31,14 +30,14 @@ public class MainActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-	    mListView = getListView();
+	    setContentView(R.layout.main_activity);
 	    mCertificateManager = new CertificateManager();
 	    mMovedCertificatesStorage = new MovedCertificatesStorage(this);
 	    mCertificateAdapter =
 			    new CertificateAdapter(this, mCertificateManager, mMovedCertificatesStorage);
 		mCertificateAdapter.onCertificateChanged();
 	    mCertificateManager.setOnCertificateChangedListener(mCertificateAdapter);
-	    mListView.setAdapter(mCertificateAdapter);
+	    setListAdapter(mCertificateAdapter);
 
 	    mMoveCertificatesDialog = new AlertDialog.Builder(this)
 			    .setTitle(R.string.dialog_move_certs_title)

@@ -15,4 +15,6 @@
 
 	<string name="dialog_no_root_message">This app requires root access to work. Make sure your device is rooted and try again.</string>
 
+	<string name="cert_list_empty">No certificates found. Please install a certificate to use this app.</string>
+
 </resources>
