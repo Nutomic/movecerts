@@ -19,3 +19,7 @@ Build with `gradle assembleDebug` or `gradle assembleRelease`. Alternatively, im
 ## Dependencies
 
 The RootCommands library (licensed under Apache 2.0)  is used for root access, and included in the `libraries/` folder.
+
+## License
+
+The project is licensed under [GPL v3](LICENSE.md).
