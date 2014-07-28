@@ -4,7 +4,9 @@
 
 With this app, you can disable it in one click.
 
-** REQUIRES ROOT **
+**REQUIRES ROOT**
+
+[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_60.png)](https://play.google.com/store/apps/details?id=com.nutomic.zertman)
 
 Thanks to:
 http://forum.xda-developers.com/google-nexus-5/help/howto-install-custom-cert-network-t2533550
@@ -18,7 +20,7 @@ Build with `gradle assembleDebug` or `gradle assembleRelease`. Alternatively, im
 
 ## Dependencies
 
-The RootCommands library (licensed under Apache 2.0)  is used for root access, and included in the `libraries/` folder.
+The [libsuperuser](https://github.com/Chainfire/libsuperuser) library (licensed under Apache 2.0)  is used for root access, and included as a git submodule in the `libraries/` folder.
 
 ## License
 
