@@ -69,6 +69,7 @@ public class MainActivity extends ListActivity {
 				    }
 			    })
 			    .create();
+	    mNoRootDialog.setCancelable(false);
     }
 
 	/**
