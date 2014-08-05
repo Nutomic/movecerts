@@ -61,7 +61,7 @@ public class CertificateManager {
 		String[] list = (system)
 				? SYSTEM_CERTIFICATES_DIR.list()
 				: USER_CERTIFICATES_DIR.list();
-		ArrayList<Certificate> ret = new ArrayList<Certificate>();
+		ArrayList<Certificate> ret = new ArrayList<>();
 		for (String file : list) {
 			ret.add(new Certificate(file, system));
 		}
@@ -142,12 +142,11 @@ public class CertificateManager {
 			CertificateFactory factory = CertificateFactory.getInstance("X509");
 			is = new BufferedInputStream(new FileInputStream(cert.getFile()));
 			cert2 = (X509Certificate) factory.generateCertificate(is);
-		} catch (IOException e) {
-			return null;
-		} catch (CertificateException e) {
+		} catch (IOException | CertificateException e) {
 			return null;
 		} finally {
 			try {
+				// TODO: crash here
 				is.close();
 			}
 			catch (IOException e) {
@@ -179,7 +178,7 @@ public class CertificateManager {
 				secondary = "";
 			}
 		}
-		return new Pair<String, String>(primary, secondary);
+		return new Pair<>(primary, secondary);
 	}
 
 	public boolean isMovingCertificate(Certificate cert) {
