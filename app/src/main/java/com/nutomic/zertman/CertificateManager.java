@@ -13,8 +13,10 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import eu.chainfire.libsuperuser.Shell;
 
@@ -44,7 +46,8 @@ public class CertificateManager {
 	/**
 	 * Contains all certificates that are currently being moved from user to system storage.
 	 */
-	private LinkedList<Certificate> mCurrentlyMoving = new LinkedList<Certificate>();
+	private Set<Certificate> mCurrentlyMoving =
+			Collections.newSetFromMap(new ConcurrentHashMap<Certificate, Boolean>());
 
 	private OnCertificateChangedListener mOnCertificateChangedListener;
 
@@ -143,11 +146,13 @@ public class CertificateManager {
 			is = new BufferedInputStream(new FileInputStream(cert.getFile()));
 			cert2 = (X509Certificate) factory.generateCertificate(is);
 		} catch (IOException | CertificateException e) {
-			return null;
+			Log.w(TAG, "Failed to read certificate description");
+			return new Pair<>(cert.getFile().getName(), "");
 		} finally {
 			try {
-				// TODO: crash here
-				is.close();
+				if (is != null) {
+					is.close();
+				}
 			}
 			catch (IOException e) {
 				Log.w(TAG, "Failed to close stream", e);

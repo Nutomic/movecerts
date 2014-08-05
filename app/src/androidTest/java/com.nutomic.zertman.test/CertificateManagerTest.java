@@ -4,9 +4,11 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
+import android.util.Pair;
 
 import com.nutomic.zertman.Certificate;
 import com.nutomic.zertman.CertificateManager;
+import com.nutomic.zertman.test.R;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -130,6 +132,23 @@ public class CertificateManagerTest extends AndroidTestCase {
 		assertTrue(mCertificateManager.deleteCertificate(cert));
 		waitForCallback();
 		assertReadOnly();
+	}
+
+	@SmallTest
+	public void testGetDescription() {
+		Certificate cert = copyCertificate(false);
+		Pair<String, String> desc = CertificateManager.getDescription(cert);
+		assertFalse(desc.first.isEmpty());
+		assertNotSame(desc.first, desc.second);
+		mCertificateManager.deleteCertificate(cert);
+	}
+
+	@SmallTest
+	public void testGetDescriptionNonExistant() {
+		Pair<String, String> desc =
+				CertificateManager.getDescription(new Certificate("does-not-exist", false));
+		assertNotNull(desc);
+		assertFalse(desc.first.isEmpty());
 	}
 
 	/**
