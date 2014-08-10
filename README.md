@@ -6,7 +6,7 @@ With this app, you can disable it in one click.
 
 **REQUIRES ROOT**
 
-[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_60.png)](https://play.google.com/store/apps/details?id=com.nutomic.zertman)
+[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_60.png)](https://play.google.com/store/apps/details?id=com.nutomic.zertman) [![Get it on F-Droid](https://f-droid.org/wiki/images/0/06/F-Droid-button_get-it-on.png)](https://f-droid.org/repository/browse/?fdfilter=move%20certs&fdid=com.nutomic.zertman)
 
 Thanks to:
 http://forum.xda-developers.com/google-nexus-5/help/howto-install-custom-cert-network-t2533550
