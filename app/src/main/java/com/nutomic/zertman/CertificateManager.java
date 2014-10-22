@@ -1,6 +1,7 @@
 package com.nutomic.zertman;
 
 import android.net.http.SslCertificate;
+import android.os.Build;
 import android.util.Log;
 import android.util.Pair;
 
@@ -27,7 +28,11 @@ public class CertificateManager {
 
 	private static final String TAG = "CertificateManager";
 
-	public static final File USER_CERTIFICATES_DIR = new File("/data/misc/keychain/cacerts-added");
+	private static final File USER_CERTIFICATES_DIR_KITKAT =
+            new File("/data/misc/keychain/cacerts-added");
+
+    private static final File USER_CERTIFICATES_DIR_LOLLIPOP =
+            new File("/data/misc/user/0/cacerts-added");
 
 	public static final File SYSTEM_CERTIFICATES_DIR = new File("/system/etc/security/cacerts");
 
@@ -63,7 +68,7 @@ public class CertificateManager {
 	public List<Certificate> getCertificates(boolean system) {
 		String[] list = (system)
 				? SYSTEM_CERTIFICATES_DIR.list()
-				: USER_CERTIFICATES_DIR.list();
+				: getUserCertificatesDir().list();
 		ArrayList<Certificate> ret = new ArrayList<>();
 		for (String file : list) {
 			ret.add(new Certificate(file, system));
@@ -83,7 +88,7 @@ public class CertificateManager {
 		}
 		remountSystem(Mode.ReadWrite);
 		// NOTE: Using mv gives error: "failed on *file* - Cross-device link".
-		run("cp " + USER_CERTIFICATES_DIR + "/" + certificate.getFile().getName() +
+		run("cp " + getUserCertificatesDir() + "/" + certificate.getFile().getName() +
 				" " + SYSTEM_CERTIFICATES_DIR + "/" + certificate.getFile().getName());
 		run("chmod 644 " + SYSTEM_CERTIFICATES_DIR + "/" + certificate.getFile().getName());
 		remountSystem(Mode.ReadOnly);
@@ -190,4 +195,14 @@ public class CertificateManager {
 		return mCurrentlyMoving.contains(cert);
 	}
 
+    /**
+     * Returns user certificate directory depending on Android version.
+     */
+    public static File getUserCertificatesDir() {
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+            return USER_CERTIFICATES_DIR_KITKAT;
+        } else {
+            return USER_CERTIFICATES_DIR_LOLLIPOP;
+        }
+    }
 }
