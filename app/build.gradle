@@ -18,16 +18,16 @@ repositories {
 }
 
 dependencies {
-	compile 'com.android.support:appcompat-v7:19.1.+'
+	compile 'com.android.support:appcompat-v7:21.0.0'
 }
 
 android {
-	compileSdkVersion 19
+	compileSdkVersion 21
 	buildToolsVersion '19.1.0'
 	defaultConfig {
 		applicationId 'com.nutomic.zertman'
 		minSdkVersion 19
-		targetSdkVersion 19
+		targetSdkVersion 21
 		versionCode 2
 		versionName '1.0.1'
 		testApplicationId 'com.nutomic.zertman.test'
