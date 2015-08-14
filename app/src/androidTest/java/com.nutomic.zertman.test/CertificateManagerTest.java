@@ -181,7 +181,7 @@ public class CertificateManagerTest extends AndroidTestCase {
 			}
 			assertNotNull(Shell.SU.run(
 					"mv " + source.getAbsolutePath() + " " +
-							CertificateManager.USER_CERTIFICATES_DIR + "/" + TEST_CERTIFICATE_NAME));
+							CertificateManager.getUserCertificatesDir() + "/" + TEST_CERTIFICATE_NAME));
 			// NOTE: We use CertificateManager.moveCertificateToSystem() to avoid
 			// implementing system remount again.
 			return (isSystemCertificate)
