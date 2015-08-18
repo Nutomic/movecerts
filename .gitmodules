@@ -1,3 +1,0 @@
-[submodule "libraries/libsuperuser"]
-	path = libraries/libsuperuser
-	url = https://github.com/Chainfire/libsuperuser.git

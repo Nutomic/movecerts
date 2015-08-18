@@ -1,33 +1,20 @@
-buildscript {
-	repositories {
-		mavenCentral()
-	}
-
-	dependencies {
-		classpath 'com.alexvasilkov:android_sign:0.2+'
-	}
-}
-
-import java.util.regex.Pattern
-
 apply plugin: 'com.android.application'
-apply plugin: 'android_sign'
 
 repositories {
-	mavenCentral()
+	jcenter()
 }
 
 dependencies {
-	compile 'com.android.support:appcompat-v7:21.0.0'
+	compile 'com.android.support:appcompat-v7:22.2.1'
 }
 
 android {
-	compileSdkVersion 21
-	buildToolsVersion '19.1.0'
+	compileSdkVersion 22
+	buildToolsVersion '22.0.1'
 	defaultConfig {
 		applicationId 'com.nutomic.zertman'
 		minSdkVersion 19
-		targetSdkVersion 21
+		targetSdkVersion 22
 		versionCode 3
 		versionName '1.0.2'
 		testApplicationId 'com.nutomic.zertman.test'
@@ -36,35 +23,14 @@ android {
 		testFunctionalTest true
 	}
 
-	signingConfigs {
-		release {
-			// Android Studio does not pass environment variables.
-			// This means you have to use the command line for release builds.
-			def ks = System.getenv("KEYSTORE")
-			def ka = System.getenv("KEY_ALIAS")
-			if (ks != null && ka != null) {
-				storeFile file(ks)
-				keyAlias ka
-			}
-		}
-	}
-
 	buildTypes {
 		debug {
 			applicationIdSuffix ".debug"
 			debuggable true
 		}
-		release {
-			signingConfig signingConfigs.release
-		}
-	}
-	
-	compileOptions {
-		sourceCompatibility JavaVersion.VERSION_1_7
-		targetCompatibility JavaVersion.VERSION_1_7
 	}
 }
 
 dependencies {
-	compile project(':libsuperuser')
+	compile 'eu.chainfire:libsuperuser:1.0.0.201504231659'
 }
