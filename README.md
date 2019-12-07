@@ -1,3 +1,5 @@
+# This project has been moved to https://gitea.nutomic.com/nutomic/movecerts
+
 ## Move Certs!
 
 "Network may be monitored": Tired of this warning after installing a certificate?
