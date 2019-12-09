@@ -1,4 +1,4 @@
-# This project has been moved to https://gitea.nutomic.com/nutomic/movecerts
+# This project has been moved to https://yerbamate.dev/nutomic/movecerts
 
 ## Move Certs!
 
